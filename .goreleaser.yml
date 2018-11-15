@@ -1,7 +1,7 @@
-project_name: ipinfo
+project_name: freq
 build:
-  main: ipinfo.go
-  binary: ipinfo
+  main: freq.go
+  binary: freq
   ldflags: -s -w
   env:
     - CGO_ENABLED=0
