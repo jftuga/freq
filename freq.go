@@ -48,8 +48,16 @@ func main() {
 		unique = append(unique, Line{data, count})
 	}
 
+	// when multiple lines have the same count, then
+	// alphabetize these lines
 	sort.Slice(unique, func(i, j int) bool {
-		return unique[i].count > unique[j].count
+		if unique[i].count > unique[j].count {
+			return true
+		}
+		if unique[i].count < unique[j].count {
+			return false
+		}
+		return unique[i].data < unique[j].data
 	})
 
 	// Unbelievable but true:
