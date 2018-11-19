@@ -2,7 +2,7 @@
 freq.go
 -John Taylor
 
-Display the line frequency of each line in a file or from STDIN
+Display the frequency of each line in a file or from STDIN
 
 To compile:
 go build -ldflags="-s -w" freq.go
