@@ -2,6 +2,8 @@
 
 Display the line frequency of each line in a file or from STDIN
 
+The [Releases Page](https://github.com/jftuga/freq/releases) contains binaries for Windows, MacOS, Linux and FreeBSD.
+
 Examples:
 
 ```
