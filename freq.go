@@ -55,6 +55,7 @@ func sortAscending(unique []Line) {
 func main() {
     args_ascend := flag.Bool("a", false, "output results in ascending order")
     args_lower := flag.Bool("l", false, "convert to lowercase first")
+    args_first := flag.Int("n", 0, "only output the first N results")
     flag.Parse()
 
 	var input *bufio.Scanner
@@ -101,7 +102,16 @@ func main() {
 	if "windows" == runtime.GOOS {
 		lineEnding = "\r\n"
 	}
-	for _, entry := range unique {
-		fmt.Printf("%7d\t%s%s", entry.count, entry.data, lineEnding)
-	}
+    if *args_first > 0 {
+        for i, entry := range unique {
+            fmt.Printf("%7d\t%s%s", entry.count, entry.data, lineEnding)
+            if i+1 ==  *args_first {
+                break
+            }
+        }
+    } else {
+        for _, entry := range unique {
+            fmt.Printf("%7d\t%s%s", entry.count, entry.data, lineEnding)
+        }
+   }
 }

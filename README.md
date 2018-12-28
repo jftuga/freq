@@ -9,6 +9,8 @@ Usage:
 Usage of ./freq:
     -a    output results in ascending order
     -l    convert to lowercase first
+    -n int
+          only output the first N results
 ```
 
 Examples:
