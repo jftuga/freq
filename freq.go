@@ -25,6 +25,8 @@ type Line struct {
 	count uint32
 }
 
+var BuildTime string
+
 // Slices are passed by reference
 func sortDescending(unique []Line) {
 	// when multiple lines have the same count, then alphabetize these lines
@@ -57,7 +59,13 @@ func main() {
     args_lower := flag.Bool("l", false, "convert to lowercase first")
     args_first := flag.Int("n", 0, "only output the first N results")
     args_percent := flag.Bool("p", false, "output using percentages")
+    args_version := flag.Bool("v", false, "display version and then exit")
     flag.Parse()
+
+    if true == *args_version {
+        fmt.Println("version:", BuildTime)
+        return
+    }
 
 	var input *bufio.Scanner
     args := flag.Args()
