@@ -4,6 +4,13 @@ Display the line frequency of each line in a file or from STDIN
 
 The [Releases Page](https://github.com/jftuga/freq/releases) contains binaries for Windows, MacOS, Linux and FreeBSD.
 
+Usage:
+```
+Usage of ./freq:
+    -a    output results in ascending order
+    -l    convert to lowercase first
+```
+
 Examples:
 
 ```
