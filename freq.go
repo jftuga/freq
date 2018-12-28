@@ -56,6 +56,7 @@ func main() {
     args_ascend := flag.Bool("a", false, "output results in ascending order")
     args_lower := flag.Bool("l", false, "convert to lowercase first")
     args_first := flag.Int("n", 0, "only output the first N results")
+    args_percent := flag.Bool("p", false, "output using percentages")
     flag.Parse()
 
 	var input *bufio.Scanner
@@ -90,28 +91,56 @@ func main() {
 		unique = append(unique, Line{data, count})
 	}
 
+    var total uint32;
+    if true == *args_percent {
+        for _, count := range tbl {
+            total += count
+        }
+    }
+
     if true == *args_ascend {
         sortAscending(unique)
     } else {
         sortDescending(unique)
     }
 
-	// Unbelievable but true:
-	// Go1.11.1 does not output CRLF on Windows with Println or Printf
 	lineEnding := "\n"
 	if "windows" == runtime.GOOS {
 		lineEnding = "\r\n"
 	}
+
+    // code redundancy in order to increase speed
     if *args_first > 0 {
-        for i, entry := range unique {
-            fmt.Printf("%7d\t%s%s", entry.count, entry.data, lineEnding)
-            if i+1 ==  *args_first {
-                break
+        if true == *args_percent {
+            for i, entry := range unique {
+                var percentage float32
+                percentage = float32(entry.count) / float32(total)
+                percentage *= 100
+                fmt.Printf("%7.1f\t%s%s", percentage, entry.data, lineEnding)
+                if i+1 ==  *args_first {
+                    break
+                }
+            }
+        } else {
+            for i, entry := range unique {
+                fmt.Printf("%7d\t%s%s", entry.count, entry.data, lineEnding)
+                if i+1 ==  *args_first {
+                    break
+                }
             }
         }
     } else {
-        for _, entry := range unique {
-            fmt.Printf("%7d\t%s%s", entry.count, entry.data, lineEnding)
-        }
+        if true == *args_percent {
+            var percentage float32
+            for _, entry := range unique {
+                percentage = float32(entry.count) / float32(total)
+                percentage *= 100
+                fmt.Printf("%7.1f\t%s%s", percentage, entry.data, lineEnding)
+            }
+        } else {
+            for _, entry := range unique {
+                fmt.Printf("%7d\t%s%s", entry.count, entry.data, lineEnding)
+            }
+       }
    }
 }
