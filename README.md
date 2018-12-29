@@ -7,11 +7,15 @@ The [Releases Page](https://github.com/jftuga/freq/releases) contains binaries f
 Usage:
 ```
 Usage of freq:
-    -a    output results in ascending order
-    -l    convert to lowercase first
-    -n int
-          only output the first N results
-    -p    output using percentages
+
+  -N int
+    	only output the last N results, useful with -a
+  -a	output results in ascending order
+  -l	convert to lowercase first
+  -n int
+    	only output the first N results
+  -p	output using percentages
+  -v	display version and then exit
 ```
 
 Examples:
