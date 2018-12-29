@@ -44,3 +44,17 @@ jftuga@linux:~/go/src/github.com/jftuga/freq$ freq -n 2 test.txt
       4 d
       3 c
 ```
+
+## Speed
+
+`freq` is faster than:
+
+    sort | uniq -c | sort -nr
+    
+but slower than something like:
+
+    export LC_ALL=C
+    sort -S 8G --parallel=4 -T /mnt/fast_ssd/tmp | uniq -c | sort -n -r -S 8G --parallel=4 -T /mnt/fast_ssd/tmp
+    
+See also:  https://www.reddit.com/r/commandline/comments/a7hq5n/psa_improving_gnu_sort_speed/
+    
