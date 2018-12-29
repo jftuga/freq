@@ -11,47 +11,47 @@ go build -ldflags="-s -w" freq.go
 package main
 
 import (
-	"bufio"
+    "bufio"
     "flag"
-	"fmt"
-	"os"
-	"runtime"
-	"sort"
+    "fmt"
+    "os"
+    "runtime"
+    "sort"
     "strings"
 )
 
 type Line struct {
-	data  string
-	count uint32
+    data  string
+    count uint32
 }
 
 var BuildTime string
 
 // Slices are passed by reference
 func sortDescending(unique []Line) {
-	// when multiple lines have the same count, then alphabetize these lines
-	sort.Slice(unique, func(i, j int) bool {
-		if unique[i].count > unique[j].count {
-			return true
-		}
-		if unique[i].count < unique[j].count {
-			return false
-		}
-		return unique[i].data < unique[j].data
-	})
+    // when multiple lines have the same count, then alphabetize these lines
+    sort.Slice(unique, func(i, j int) bool {
+        if unique[i].count > unique[j].count {
+            return true
+        }
+        if unique[i].count < unique[j].count {
+            return false
+        }
+        return unique[i].data < unique[j].data
+    })
 }
 
 func sortAscending(unique []Line) {
-	// when multiple lines have the same count, then alphabetize these lines
-	sort.Slice(unique, func(i, j int) bool {
-		if unique[i].count < unique[j].count {
-			return true
-		}
-		if unique[i].count > unique[j].count {
-			return false
-		}
-		return unique[i].data < unique[j].data
-	})
+    // when multiple lines have the same count, then alphabetize these lines
+    sort.Slice(unique, func(i, j int) bool {
+        if unique[i].count < unique[j].count {
+            return true
+        }
+        if unique[i].count > unique[j].count {
+            return false
+        }
+        return unique[i].data < unique[j].data
+    })
 }
 
 func outputActual(unique []Line, count int, lineEnding string) {
@@ -81,24 +81,24 @@ func main() {
         return
     }
 
-	var input *bufio.Scanner
+    var input *bufio.Scanner
     args := flag.Args()
 
-	if 0 == len(args) { // read from STDIN
-		input = bufio.NewScanner(os.Stdin)
-	} else { // read from filename
-		fname := args[0]
-		file, err := os.Open(fname)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		defer file.Close()
-		input = bufio.NewScanner(file)
-	}
+    if 0 == len(args) { // read from STDIN
+        input = bufio.NewScanner(os.Stdin)
+    } else { // read from filename
+        fname := args[0]
+        file, err := os.Open(fname)
+        if err != nil {
+            fmt.Println(err)
+            return
+        }
+        defer file.Close()
+        input = bufio.NewScanner(file)
+    }
 
     // read input line-by-line to populate 'tbl' hashtable
-	tbl := make(map[string]uint32)
+    tbl := make(map[string]uint32)
     if *argsLower {
         for input.Scan() {
             tbl[strings.ToLower(input.Text())]++
@@ -110,10 +110,10 @@ func main() {
     }
 
     // 'unique' is used for sorting
-	var unique []Line
-	for data, count := range tbl {
-		unique = append(unique, Line{data, count})
-	}
+    var unique []Line
+    for data, count := range tbl {
+        unique = append(unique, Line{data, count})
+    }
 
     // 'total' is used for the percentage divisor
     var total uint32;
@@ -130,10 +130,10 @@ func main() {
         sortDescending(unique)
     }
 
-	lineEnding := "\n"
-	if "windows" == runtime.GOOS {
-		lineEnding = "\r\n"
-	}
+    lineEnding := "\n"
+    if "windows" == runtime.GOOS {
+        lineEnding = "\r\n"
+    }
 
     // 'displayCount' is the number of entries to output
     displayCount := len(unique) - 1
