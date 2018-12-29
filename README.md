@@ -40,9 +40,7 @@ R:\freq>type test.txt | freq.exe
       2 b
       1 a
 
-R:\freq>freq test.txt
+jftuga@linux:~/go/src/github.com/jftuga/freq$ freq -n 2 test.txt
       4 d
       3 c
-      2 b
-      1 a
 ```
