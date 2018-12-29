@@ -54,15 +54,28 @@ func sortAscending(unique []Line) {
     })
 }
 
-func outputActual(unique []Line, count int, lineEnding string) {
-    for i := 0; i <= count; i++ {
+func outputActual(unique []Line, start int, count int, lineEnding string) {
+    if start > 0 {
+        start = count - start + 1
+    }
+    if start < 0 {
+        start = 0
+    }
+    for i := start; i <= count; i++ {
         fmt.Printf("%7d\t%s%s", unique[i].count, unique[i].data, lineEnding)
     }
 }
 
-func outputPercentage(unique []Line, count int, total float32, lineEnding string) {
+func outputPercentage(unique []Line, start int, count int, total float32, lineEnding string) {
+    if start > 0 {
+        start = count - start + 1
+    }
+    if start < 0 {
+        start = 0
+    }
+
     var percentage float32
-    for i := 0; i <= count; i++ {
+    for i := start; i <= count; i++ {
         percentage = 100 * (float32(unique[i].count) / total)
         fmt.Printf("%7.1f\t%s%s", percentage, unique[i].data, lineEnding)
     }
@@ -72,10 +85,15 @@ func main() {
     argsAscend := flag.Bool("a", false, "output results in ascending order")
     argsLower := flag.Bool("l", false, "convert to lowercase first")
     argsFirst := flag.Int("n", 0, "only output the first N results")
+    argsLast := flag.Int("N", 0, "only output the last N results, useful with -a")
     argsPercent := flag.Bool("p", false, "output using percentages")
     argsVersion := flag.Bool("v", false, "display version and then exit")
-    flag.Parse()
+    flag.Usage = func() {
+        fmt.Fprintf(os.Stderr, "%s %s, display the frequency of each line in a file or from STDIN.\n\n", os.Args[0], version)
+        flag.PrintDefaults()
+    }
 
+    flag.Parse()
     if *argsVersion {
         fmt.Println("version:", version)
         return
@@ -144,11 +162,17 @@ func main() {
         displayCount = len(unique) - 1
     }
 
+    // determine where to start the results output
+    start := 0
+    if *argsLast > 0 {
+        start = *argsLast
+    }
+
     // display the results to STDOUT
     if *argsPercent {
-        outputPercentage(unique, displayCount, float32(total), lineEnding)
+        outputPercentage(unique, start, displayCount, float32(total), lineEnding)
     } else {
-        outputActual(unique, displayCount, lineEnding)
+        outputActual(unique, start, displayCount, lineEnding)
     }
 }
 
