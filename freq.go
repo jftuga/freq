@@ -54,15 +54,29 @@ func sortAscending(unique []Line) {
 	})
 }
 
+func outputActual(unique []Line, count int, lineEnding string) {
+    for i := 0; i <= count; i++ {
+        fmt.Printf("%7d\t%s%s", unique[i].count, unique[i].data, lineEnding)
+    }
+}
+
+func outputPercentage(unique []Line, count int, total float32, lineEnding string) {
+    var percentage float32
+    for i := 0; i <= count; i++ {
+        percentage = 100 * (float32(unique[i].count) / total)
+        fmt.Printf("%7.1f\t%s%s", percentage, unique[i].data, lineEnding)
+    }
+}
+
 func main() {
-    args_ascend := flag.Bool("a", false, "output results in ascending order")
-    args_lower := flag.Bool("l", false, "convert to lowercase first")
-    args_first := flag.Int("n", 0, "only output the first N results")
-    args_percent := flag.Bool("p", false, "output using percentages")
-    args_version := flag.Bool("v", false, "display version and then exit")
+    argsAscend := flag.Bool("a", false, "output results in ascending order")
+    argsLower := flag.Bool("l", false, "convert to lowercase first")
+    argsFirst := flag.Int("n", 0, "only output the first N results")
+    argsPercent := flag.Bool("p", false, "output using percentages")
+    argsVersion := flag.Bool("v", false, "display version and then exit")
     flag.Parse()
 
-    if true == *args_version {
+    if *argsVersion {
         fmt.Println("version:", BuildTime)
         return
     }
@@ -83,8 +97,9 @@ func main() {
 		input = bufio.NewScanner(file)
 	}
 
+    // read input line-by-line to populate 'tbl' hashtable
 	tbl := make(map[string]uint32)
-    if true == *args_lower {
+    if *argsLower {
         for input.Scan() {
             tbl[strings.ToLower(input.Text())]++
         }
@@ -94,19 +109,22 @@ func main() {
         }
     }
 
+    // 'unique' is used for sorting
 	var unique []Line
 	for data, count := range tbl {
 		unique = append(unique, Line{data, count})
 	}
 
+    // 'total' is used for the percentage divisor
     var total uint32;
-    if true == *args_percent {
+    if *argsPercent {
         for _, count := range tbl {
             total += count
         }
     }
 
-    if true == *args_ascend {
+    // run an in-place sort of 'unique'
+    if *argsAscend {
         sortAscending(unique)
     } else {
         sortDescending(unique)
@@ -117,38 +135,20 @@ func main() {
 		lineEnding = "\r\n"
 	}
 
-    // code redundancy in order to increase speed
-    if *args_first > 0 {
-        if true == *args_percent {
-            for i, entry := range unique {
-                var percentage float32
-                percentage = float32(entry.count) / float32(total)
-                percentage *= 100
-                fmt.Printf("%7.1f\t%s%s", percentage, entry.data, lineEnding)
-                if i+1 ==  *args_first {
-                    break
-                }
-            }
-        } else {
-            for i, entry := range unique {
-                fmt.Printf("%7d\t%s%s", entry.count, entry.data, lineEnding)
-                if i+1 ==  *args_first {
-                    break
-                }
-            }
-        }
+    // 'displayCount' is the number of entries to output
+    displayCount := len(unique) - 1
+    if *argsFirst > 0 {
+        displayCount = *argsFirst - 1
+    }
+    if displayCount >= len(unique) {
+        displayCount = len(unique) - 1
+    }
+
+    // display the results to STDOUT
+    if *argsPercent {
+        outputPercentage(unique, displayCount, float32(total), lineEnding)
     } else {
-        if true == *args_percent {
-            var percentage float32
-            for _, entry := range unique {
-                percentage = float32(entry.count) / float32(total)
-                percentage *= 100
-                fmt.Printf("%7.1f\t%s%s", percentage, entry.data, lineEnding)
-            }
-        } else {
-            for _, entry := range unique {
-                fmt.Printf("%7d\t%s%s", entry.count, entry.data, lineEnding)
-            }
-       }
-   }
+        outputActual(unique, displayCount, lineEnding)
+    }
 }
+
