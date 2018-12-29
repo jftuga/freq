@@ -25,7 +25,7 @@ type Line struct {
     count uint32
 }
 
-var BuildTime string
+var version string
 
 // Slices are passed by reference
 func sortDescending(unique []Line) {
@@ -77,7 +77,7 @@ func main() {
     flag.Parse()
 
     if *argsVersion {
-        fmt.Println("version:", BuildTime)
+        fmt.Println("version:", version)
         return
     }
 
