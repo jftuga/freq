@@ -29,7 +29,6 @@ var version string
 
 // Slices are passed by reference
 func sortInput(unique []Line, descending bool) {
-    // when multiple lines have the same count, then alphabetize these lines
     sort.Slice(unique, func(i, j int) bool {
         if unique[i].count > unique[j].count {
             return descending
@@ -37,6 +36,7 @@ func sortInput(unique []Line, descending bool) {
         if unique[i].count < unique[j].count {
             return !descending
         }
+        // when multiple lines have the same count, then alphabetize these lines
         return unique[i].data < unique[j].data
     })
 }
@@ -76,7 +76,8 @@ func main() {
     argsPercent := flag.Bool("p", false, "output using percentages")
     argsVersion := flag.Bool("v", false, "display version and then exit")
     flag.Usage = func() {
-        fmt.Fprintf(os.Stderr, "%s %s, display the frequency of each line in a file or from STDIN.\n\n", os.Args[0], version)
+        fmt.Fprintf(os.Stderr, "\n%s %s, display the frequency of each line in a file or from STDIN.\n\n", os.Args[0], version)
+        fmt.Fprintf(os.Stderr, "Usage for %s:\n", os.Args[0])
         flag.PrintDefaults()
     }
 
