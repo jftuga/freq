@@ -31,29 +31,17 @@ var version string
 func sortInput(unique []Line, descending bool) {
     sort.Slice(unique, func(i, j int) bool {
         if unique[i].count > unique[j].count {
-            return descending
+            return !descending
         }
         if unique[i].count < unique[j].count {
-            return !descending
+            return descending
         }
         // when multiple lines have the same count, then alphabetize these lines
         return unique[i].data < unique[j].data
     })
 }
 
-func outputActual(unique []Line, start int, count int, lineEnding string) {
-    if start > 0 {
-        start = count - start + 1
-    }
-    if start < 0 {
-        start = 0
-    }
-    for i := start; i <= count; i++ {
-        fmt.Printf("%7d\t%s%s", unique[i].count, unique[i].data, lineEnding)
-    }
-}
-
-func outputPercentage(unique []Line, start int, count int, total float32, lineEnding string) {
+func output(unique []Line, start int, count int, total float32, lineEnding string, usePercentage bool) {
     if start > 0 {
         start = count - start + 1
     }
@@ -61,11 +49,17 @@ func outputPercentage(unique []Line, start int, count int, total float32, lineEn
         start = 0
     }
 
-    var percentage float32
-    for i := start; i <= count; i++ {
-        percentage = 100 * (float32(unique[i].count) / total)
-        fmt.Printf("%7.1f\t%s%s", percentage, unique[i].data, lineEnding)
-    }
+    if usePercentage {
+        var percentage float32
+        for i := start; i <= count; i++ {
+            percentage = 100 * (float32(unique[i].count) / total)
+            fmt.Printf("%7.1f\t%s%s", percentage, unique[i].data, lineEnding)
+         }
+     } else {
+        for i := start; i <= count; i++ {
+            fmt.Printf("%7d\t%s%s", unique[i].count, unique[i].data, lineEnding)
+        }
+     }
 }
 
 func main() {
@@ -152,11 +146,7 @@ func main() {
         start = *argsLast
     }
 
-    // display the results to STDOUT
-    if *argsPercent {
-        outputPercentage(unique, start, displayCount, float32(total), lineEnding)
-    } else {
-        outputActual(unique, start, displayCount, lineEnding)
-    }
+    // output the results to STDOUT
+    output(unique, start, displayCount, float32(total), lineEnding, *argsPercent)
 }
 
