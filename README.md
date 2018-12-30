@@ -47,7 +47,7 @@ jftuga@linux:~/go/src/github.com/jftuga/freq$ freq -n 2 test.txt
 
 ## Speed
 
-`freq` is faster than:
+For input greater than a few hundred megs in size, `freq` is faster than:
 
     sort | uniq -c | sort -nr
     # or
