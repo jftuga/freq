@@ -28,27 +28,14 @@ type Line struct {
 var version string
 
 // Slices are passed by reference
-func sortDescending(unique []Line) {
+func sortInput(unique []Line, descending bool) {
     // when multiple lines have the same count, then alphabetize these lines
     sort.Slice(unique, func(i, j int) bool {
         if unique[i].count > unique[j].count {
-            return true
+            return descending
         }
         if unique[i].count < unique[j].count {
-            return false
-        }
-        return unique[i].data < unique[j].data
-    })
-}
-
-func sortAscending(unique []Line) {
-    // when multiple lines have the same count, then alphabetize these lines
-    sort.Slice(unique, func(i, j int) bool {
-        if unique[i].count < unique[j].count {
-            return true
-        }
-        if unique[i].count > unique[j].count {
-            return false
+            return !descending
         }
         return unique[i].data < unique[j].data
     })
@@ -142,11 +129,7 @@ func main() {
     }
 
     // run an in-place sort of 'unique'
-    if *argsAscend {
-        sortAscending(unique)
-    } else {
-        sortDescending(unique)
-    }
+    sortInput(unique, *argsAscend)
 
     lineEnding := "\n"
     if "windows" == runtime.GOOS {
