@@ -50,6 +50,8 @@ jftuga@linux:~/go/src/github.com/jftuga/freq$ freq -n 2 test.txt
 `freq` is faster than:
 
     sort | uniq -c | sort -nr
+    # or
+    awk '{a[$0]++}END{for(i in a){print a[i] " " i}}' | sort -nr
     
 but slower than something like:
 
