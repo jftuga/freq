@@ -28,13 +28,13 @@ type Line struct {
 var version string
 
 // Slices are passed by reference
-func sortInput(unique []Line, descending bool) {
+func sortInput(unique []Line, asscending bool) {
     sort.Slice(unique, func(i, j int) bool {
         if unique[i].count > unique[j].count {
-            return !descending
+            return !asscending
         }
         if unique[i].count < unique[j].count {
-            return descending
+            return asscending
         }
         // when multiple lines have the same count, then alphabetize these lines
         return unique[i].data < unique[j].data
