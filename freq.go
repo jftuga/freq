@@ -62,6 +62,20 @@ func output(unique []Line, start int, count int, total float32, lineEnding strin
      }
 }
 
+func ReadInput(input *bufio.Scanner, convertToLower bool) map[string]uint32 {
+    tbl := make(map[string]uint32)
+    if convertToLower {
+        for input.Scan() {
+            tbl[strings.ToLower(input.Text())]++
+        }
+    } else {
+        for input.Scan() {
+            tbl[input.Text()]++
+        }
+    }
+    return tbl
+}
+
 func main() {
     argsAscend := flag.Bool("a", false, "output results in ascending order")
     argsLower := flag.Bool("l", false, "convert to lowercase first")
@@ -98,16 +112,7 @@ func main() {
     }
 
     // read input line-by-line to populate 'tbl' hashtable
-    tbl := make(map[string]uint32)
-    if *argsLower {
-        for input.Scan() {
-            tbl[strings.ToLower(input.Text())]++
-        }
-    } else {
-        for input.Scan() {
-            tbl[input.Text()]++
-        }
-    }
+    tbl := ReadInput(input, *argsLower)
 
     // 'unique' is used for sorting
     var unique []Line
