@@ -34,3 +34,16 @@ checksum:
   name_template: "{{ .ProjectName }}_{{ .Version }}--sha256_checksums.txt"
 release:
   draft: true
+nfpm:
+  name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ .Arm }}"
+  homepage:  https://github.com/jftuga/freq
+  description: freq, display the frequency of each line in a file or from STDIN
+  maintainer: https://reddit.com/u/jftuga
+  license: MIT
+  vendor: jftuga
+  formats:
+  - deb
+  - rpm
+  recommends:
+  - rpm
+
