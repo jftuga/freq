@@ -14,7 +14,9 @@ import (
     "bufio"
     "flag"
     "fmt"
+    "net"
     "os"
+    "regexp"
     "runtime"
     "sort"
     "strings"
@@ -41,7 +43,29 @@ func sortInput(unique []Line, ascending bool) {
     })
 }
 
-func output(unique []Line, start int, count int, total float32, lineEnding string, usePercentage bool) {
+var dnsCache map[string]string
+func dnsLookup(ip string) string {
+    // 'cached' should never be used since all output is now unique
+    // so this may be removed in the future
+    cached := dnsCache[ip]
+    if len(cached) > 0 {
+        return cached
+    }
+    addresses, err := net.LookupAddr(ip)
+    if err != nil {
+        return ip
+    }
+
+    if len(addresses) == 0 {
+        return ip
+    }
+    resolved := strings.TrimSuffix(addresses[0],".")
+    resolved = strings.ToLower(resolved)
+    dnsCache[ip] = resolved
+    return resolved
+}
+
+func output(unique []Line, start int, count int, total float32, lineEnding string, usePercentage bool, dnsResolve bool) {
     if start > 0 {
         start = count - start + 1
     }
@@ -49,14 +73,26 @@ func output(unique []Line, start int, count int, total float32, lineEnding strin
         start = 0
     }
 
+    dnsRE := regexp.MustCompile(`^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$`)
+
     if usePercentage {
         var percentage float32
         for i := start; i <= count; i++ {
             percentage = 100 * (float32(unique[i].count) / total)
+            if( dnsResolve ) {
+                if( dnsRE.MatchString(unique[i].data) ) {
+                    unique[i].data = dnsLookup(unique[i].data)
+                }
+            }
             fmt.Printf("%7.1f\t%s%s", percentage, unique[i].data, lineEnding)
          }
      } else {
         for i := start; i <= count; i++ {
+            if( dnsResolve ) {
+                if( dnsRE.MatchString(unique[i].data) ) {
+                    unique[i].data = dnsLookup(unique[i].data)
+                }
+            }
             fmt.Printf("%7d\t%s%s", unique[i].count, unique[i].data, lineEnding)
         }
      }
@@ -82,6 +118,7 @@ func main() {
     argsFirst := flag.Int("n", 0, "only output the first N results")
     argsLast := flag.Int("N", 0, "only output the last N results, useful with -a")
     argsPercent := flag.Bool("p", false, "output using percentages")
+    argsResolve := flag.Bool("d", false, "if line only contains IP address, resolve to hostname")
     argsVersion := flag.Bool("v", false, "display version and then exit")
     flag.Usage = func() {
         fmt.Fprintf(os.Stderr, "\n%s %s, display the frequency of each line in a file or from STDIN.\n\n", os.Args[0], version)
@@ -95,6 +132,7 @@ func main() {
         return
     }
 
+    dnsCache = make(map[string]string)
     var input *bufio.Scanner
     args := flag.Args()
 
@@ -152,6 +190,6 @@ func main() {
     }
 
     // output the results to STDOUT
-    output(unique, start, displayCount, float32(total), lineEnding, *argsPercent)
+    output(unique, start, displayCount, float32(total), lineEnding, *argsPercent, *argsResolve)
 }
 
