@@ -11,6 +11,7 @@ Usage of freq:
   -N int
     	only output the last N results, useful with -a
   -a	output results in ascending order
+  -d  if line only contains IP address, resolve to hostname
   -l	convert to lowercase first
   -n int
     	only output the first N results
