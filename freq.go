@@ -148,6 +148,9 @@ func ReadInput(input *bufio.Scanner, convertToLower bool, substringStart int, su
                 if substringStart >= lineLen {
                     lineStart = lineLen - 1
                 }
+                if lineStart < 0 {
+                    lineStart = 0
+                }
                 tbl[line[lineStart:]]++
             }
         }
@@ -169,6 +172,9 @@ func ReadInput(input *bufio.Scanner, convertToLower bool, substringStart int, su
                 lineEnd = substringEnd
                 if substringStart >= lineLen {
                     lineStart = lineLen - 1
+                }
+                if lineStart < 0 {
+                    lineStart = 0
                 }
                 if lineLen <= substringEnd {
                     lineEnd = lineLen
