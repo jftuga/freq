@@ -108,4 +108,11 @@ NEW=`increment_version ${GITVER} ${LEFT}`
 read -p "Run: git tag -a ${NEW} ; git push origin ${NEW} (y/n)? " ANS
 if [ "${ANS}" == "y" ] ; then
     git tag -a ${NEW} && git push origin ${NEW}
+    echo
+    echo "Optionally, run:"
+    echo
+    echo "goreleaser release"
+    echo
 fi
+
+
