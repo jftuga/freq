@@ -206,7 +206,7 @@ func main() {
     var input *bufio.Scanner
     args := flag.Args()
 
-    if *argsSubstringStart > *argsSubstringEnd {
+    if *argsSubstringEnd > 0 && *argsSubstringStart > *argsSubstringEnd {
         fmt.Fprintf(os.Stderr, "-se value must be greater or equal to -ss value\n")
         os.Exit(1)
     }
