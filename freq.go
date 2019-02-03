@@ -98,15 +98,83 @@ func output(unique []Line, start int, count int, total float32, lineEnding strin
      }
 }
 
-func ReadInput(input *bufio.Scanner, convertToLower bool) map[string]uint32 {
+func ReadInput(input *bufio.Scanner, convertToLower bool, substringStart int, substringEnd int) map[string]uint32 {
     tbl := make(map[string]uint32)
-    if convertToLower {
-        for input.Scan() {
-            tbl[strings.ToLower(input.Text())]++
+
+    if substringStart == 0 && substringEnd == 0 {
+        if convertToLower {
+            for input.Scan() {
+                tbl[strings.ToLower(input.Text())]++
+            }
+        } else {
+            for input.Scan() {
+                tbl[input.Text()]++
+            }
         }
-    } else {
-        for input.Scan() {
-            tbl[input.Text()]++
+    } else if(substringStart == 0 && substringEnd > 0) {
+        var line string
+        var lineLen int
+        var lineEnd int
+
+        if convertToLower {
+            for input.Scan() {
+                tbl[strings.ToLower(input.Text())]++
+            }
+        } else {
+            for input.Scan() {
+                line = input.Text()
+                lineLen = len(line)
+                lineEnd = substringEnd
+                if lineLen <= substringEnd {
+                    lineEnd = lineLen
+                }
+                tbl[line[:lineEnd]]++
+            }
+        }
+    } else if(substringStart > 0 && substringEnd == 0) {
+        var line string
+        var lineLen int
+        var lineStart int
+
+        if convertToLower {
+            for input.Scan() {
+                tbl[strings.ToLower(input.Text())]++
+            }
+        } else {
+            for input.Scan() {
+                line = input.Text()
+                lineLen = len(line)
+                lineStart = substringStart - 1
+                if substringStart >= lineLen {
+                    lineStart = lineLen - 1
+                }
+                tbl[line[lineStart:]]++
+            }
+        }
+    } else if(substringStart > 0 && substringEnd > 0) {
+        var line string
+        var lineLen int
+        var lineStart int
+        var lineEnd int
+
+        if convertToLower {
+            for input.Scan() {
+                tbl[strings.ToLower(input.Text())]++
+            }
+        } else {
+            for input.Scan() {
+                line = input.Text()
+                lineLen = len(line)
+                lineStart = substringStart - 1
+                lineEnd = substringEnd
+                if substringStart >= lineLen {
+                    lineStart = lineLen - 1
+                }
+                if lineLen <= substringEnd {
+                    lineEnd = lineLen
+                }
+                tbl[line[lineStart:lineEnd]]++
+            }
         }
     }
     return tbl
@@ -120,6 +188,8 @@ func main() {
     argsPercent := flag.Bool("p", false, "output using percentages")
     argsResolve := flag.Bool("d", false, "if line only contains IP address, resolve to hostname")
     argsVersion := flag.Bool("v", false, "display version and then exit")
+    argsSubstringStart := flag.Int("ss", 0, "substring start position")
+    argsSubstringEnd := flag.Int("se", 0, "substring end position")
     flag.Usage = func() {
         fmt.Fprintf(os.Stderr, "\n%s %s, display the frequency of each line in a file or from STDIN.\n\n", os.Args[0], version)
         fmt.Fprintf(os.Stderr, "Usage for %s:\n", os.Args[0])
@@ -128,7 +198,7 @@ func main() {
 
     flag.Parse()
     if *argsVersion {
-        fmt.Println("version:", version)
+        fmt.Fprintf(os.Stderr, "version: %s\n", version)
         return
     }
 
@@ -136,13 +206,18 @@ func main() {
     var input *bufio.Scanner
     args := flag.Args()
 
+    if *argsSubstringStart > *argsSubstringEnd {
+        fmt.Fprintf(os.Stderr, "-se value must be greater or equal to -ss value\n")
+        os.Exit(1)
+    }
+
     if 0 == len(args) { // read from STDIN
         input = bufio.NewScanner(os.Stdin)
     } else { // read from filename
         fname := args[0]
         file, err := os.Open(fname)
         if err != nil {
-            fmt.Println(err)
+            fmt.Fprintf(os.Stderr, "%s\n", err)
             return
         }
         defer file.Close()
@@ -150,7 +225,7 @@ func main() {
     }
 
     // read input line-by-line to populate 'tbl' hashtable
-    tbl := ReadInput(input, *argsLower)
+    tbl := ReadInput(input, *argsLower, *argsSubstringStart, *argsSubstringEnd)
 
     // 'unique' is used for sorting
     var unique []Line
