@@ -6,10 +6,10 @@ The [Releases Page](https://github.com/jftuga/freq/releases) contains binaries f
 
 ```
 Usage for freq:
-
   -N int
     	only output the last N results, useful with -a
   -a	output results in ascending order
+  -b	bare: don't display numeric frequencies; only display a sorted, unique list
   -d	if line only contains IP address, resolve to hostname
   -l	convert to lowercase first
   -n int

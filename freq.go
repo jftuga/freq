@@ -27,7 +27,7 @@ type Line struct {
     count uint32
 }
 
-var version string
+const version = "1.8.0"
 
 // Slices are passed by reference
 func sortInput(unique []Line, ascending bool) {
@@ -65,7 +65,7 @@ func dnsLookup(ip string) string {
     return resolved
 }
 
-func output(unique []Line, start int, count int, total float32, lineEnding string, usePercentage bool, dnsResolve bool) {
+func output(unique []Line, start int, count int, total float32, lineEnding string, usePercentage bool, dnsResolve bool, bare bool) {
     if start > 0 {
         start = count - start + 1
     }
@@ -84,7 +84,11 @@ func output(unique []Line, start int, count int, total float32, lineEnding strin
                     unique[i].data = dnsLookup(unique[i].data)
                 }
             }
-            fmt.Printf("%7.1f\t%s%s", percentage, unique[i].data, lineEnding)
+            if bare {
+                fmt.Printf("%s%s", unique[i].data, lineEnding)
+            } else {
+                fmt.Printf("%7.1f\t%s%s", percentage, unique[i].data, lineEnding)
+            }
          }
      } else {
         for i := start; i <= count; i++ {
@@ -93,7 +97,11 @@ func output(unique []Line, start int, count int, total float32, lineEnding strin
                     unique[i].data = dnsLookup(unique[i].data)
                 }
             }
-            fmt.Printf("%7d\t%s%s", unique[i].count, unique[i].data, lineEnding)
+            if bare {
+                fmt.Printf("%s%s", unique[i].data, lineEnding)
+            } else {
+                fmt.Printf("%7d\t%s%s", unique[i].count, unique[i].data, lineEnding)
+            }
         }
      }
 }
@@ -192,6 +200,7 @@ func main() {
     argsFirst := flag.Int("n", 0, "only output the first N results")
     argsLast := flag.Int("N", 0, "only output the last N results, useful with -a")
     argsPercent := flag.Bool("p", false, "output using percentages")
+    argsBare := flag.Bool("b", false, "bare: don't display numeric frequencies; only display a sorted, unique list")
     argsResolve := flag.Bool("d", false, "if line only contains IP address, resolve to hostname")
     argsVersion := flag.Bool("v", false, "display version and then exit")
     argsSubstringStart := flag.Int("ss", 0, "substring start position")
@@ -271,6 +280,6 @@ func main() {
     }
 
     // output the results to STDOUT
-    output(unique, start, displayCount, float32(total), lineEnding, *argsPercent, *argsResolve)
+    output(unique, start, displayCount, float32(total), lineEnding, *argsPercent, *argsResolve, *argsBare)
 }
 
