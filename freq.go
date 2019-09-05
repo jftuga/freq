@@ -6,6 +6,11 @@ Display the frequency of each line in a file or from STDIN
 
 To compile:
 go build -ldflags="-s -w" freq.go
+
+MIT License; Copyright (c) 2019 John Taylor
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 package main
@@ -27,7 +32,7 @@ type Line struct {
     count uint32
 }
 
-const version = "1.8.0"
+const version = "1.9.0"
 
 // Slices are passed by reference
 func sortInput(unique []Line, ascending bool) {
@@ -106,17 +111,41 @@ func output(unique []Line, start int, count int, total float32, lineEnding strin
      }
 }
 
-func ReadInput(input *bufio.Scanner, convertToLower bool, substringStart int, substringEnd int) map[string]uint32 {
+func findRegExp(line string, re *regexp.Regexp) bool {
+    if re.MatchString(line) {
+        return true
+    }
+    return false
+}
+
+func ReadInput(input *bufio.Scanner, convertToLower bool, substringStart int, substringEnd int, matchRegExp string) map[string]uint32 {
     tbl := make(map[string]uint32)
+
+    var regExpFilter *regexp.Regexp
+    if len(matchRegExp) > 0 {
+        regExpFilter = regexp.MustCompile(matchRegExp)
+    }
+    fmt.Println("regExpFilter:", regExpFilter)
+    var inputText string
 
     if substringStart == 0 && substringEnd == 0 {
         if convertToLower {
             for input.Scan() {
-                tbl[strings.ToLower(input.Text())]++
+                fmt.Println("flag 100")
+                inputText = input.Text()
+                if regExpFilter != nil && !findRegExp(inputText,regExpFilter) {
+                    continue
+                }
+                tbl[strings.ToLower(inputText)]++
             }
         } else {
             for input.Scan() {
-                tbl[input.Text()]++
+                fmt.Println("flag 150")
+                inputText = input.Text()
+                if regExpFilter != nil && !findRegExp(inputText,regExpFilter) {
+                    continue
+                }
+                tbl[inputText]++
             }
         }
     } else if(substringStart == 0 && substringEnd > 0) {
@@ -126,7 +155,12 @@ func ReadInput(input *bufio.Scanner, convertToLower bool, substringStart int, su
 
         if convertToLower {
             for input.Scan() {
-                tbl[strings.ToLower(input.Text())]++
+                fmt.Println("flag 200")
+                inputText = input.Text()
+                if regExpFilter != nil && !findRegExp(inputText,regExpFilter) {
+                    continue
+                }
+                tbl[strings.ToLower(inputText)]++
             }
         } else {
             for input.Scan() {
@@ -135,6 +169,10 @@ func ReadInput(input *bufio.Scanner, convertToLower bool, substringStart int, su
                 lineEnd = substringEnd
                 if lineLen <= substringEnd {
                     lineEnd = lineLen
+                }
+                fmt.Println("flag 250")
+                if regExpFilter != nil && !findRegExp(line[:lineEnd],regExpFilter) {
+                    continue
                 }
                 tbl[line[:lineEnd]]++
             }
@@ -146,7 +184,12 @@ func ReadInput(input *bufio.Scanner, convertToLower bool, substringStart int, su
 
         if convertToLower {
             for input.Scan() {
-                tbl[strings.ToLower(input.Text())]++
+                fmt.Println("flag 300")
+                inputText = input.Text()
+                if regExpFilter != nil && !findRegExp(inputText,regExpFilter) {
+                    continue
+                }
+                tbl[strings.ToLower(inputText)]++
             }
         } else {
             for input.Scan() {
@@ -158,6 +201,10 @@ func ReadInput(input *bufio.Scanner, convertToLower bool, substringStart int, su
                 }
                 if lineStart < 0 {
                     lineStart = 0
+                }
+                fmt.Println("flag 350")
+                if regExpFilter != nil && !findRegExp(line[lineStart:],regExpFilter) {
+                    continue
                 }
                 tbl[line[lineStart:]]++
             }
@@ -170,10 +217,16 @@ func ReadInput(input *bufio.Scanner, convertToLower bool, substringStart int, su
 
         if convertToLower {
             for input.Scan() {
-                tbl[strings.ToLower(input.Text())]++
+                fmt.Println("flag 400")
+                inputText = strings.ToLower(input.Text())
+                if regExpFilter != nil && !findRegExp(inputText,regExpFilter) {
+                    continue
+                }
+                tbl[inputText]++
             }
         } else {
             for input.Scan() {
+                fmt.Println("flag 450")
                 line = input.Text()
                 lineLen = len(line)
                 lineStart = substringStart - 1
@@ -186,6 +239,9 @@ func ReadInput(input *bufio.Scanner, convertToLower bool, substringStart int, su
                 }
                 if lineLen <= substringEnd {
                     lineEnd = lineLen
+                }
+                if regExpFilter != nil && !findRegExp(line[lineStart:lineEnd],regExpFilter) {
+                    continue
                 }
                 tbl[line[lineStart:lineEnd]]++
             }
@@ -205,6 +261,7 @@ func main() {
     argsVersion := flag.Bool("v", false, "display version and then exit")
     argsSubstringStart := flag.Int("ss", 0, "substring start position")
     argsSubstringEnd := flag.Int("se", 0, "substring end position")
+    argsRegExp := flag.String("re", "", "only include results matching REG-EXP; prepend '(?i)' for case insensitive matching")
     flag.Usage = func() {
         fmt.Fprintf(os.Stderr, "\n%s %s, display the frequency of each line in a file or from STDIN.\n\n", os.Args[0], version)
         fmt.Fprintf(os.Stderr, "Usage for %s:\n", os.Args[0])
@@ -240,7 +297,7 @@ func main() {
     }
 
     // read input line-by-line to populate 'tbl' hashtable
-    tbl := ReadInput(input, *argsLower, *argsSubstringStart, *argsSubstringEnd)
+    tbl := ReadInput(input, *argsLower, *argsSubstringStart, *argsSubstringEnd, *argsRegExp)
 
     // 'unique' is used for sorting
     var unique []Line
