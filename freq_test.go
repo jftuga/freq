@@ -13,4 +13,48 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+package main
+
+
+import (
+    "bufio"
+    "fmt"
+    "testing"
+)
+
+func TestFreq(t *testing.T) {
+    data1 := []string {
+        "total 28",
+        "-rw-rw-r-- 1 jftuga jftuga  1068 Sep  5 15:41 LICENSE",
+        "-rw-rw-r-- 1 jftuga jftuga   101 Sep  5 15:41 Makefile",
+        "-rw-rw-r-- 1 jftuga jftuga  1938 Sep  5 15:41 README.md",
+        "-rw-rw-r-- 1 jftuga jftuga 11354 Sep  5 15:41 freq.go",
+        "-rw-rw-r-- 1 jftuga jftuga  1310 Sep  5 16:29 freq_test.go",
+        "-rw-rw-r-- 1 jftuga jftuga     0 Sep  5 16:37 testfile",
+    }
+
+    data2 := []string {
+        "usr","usr","usr","usr","usr","usr",
+        "sys","sys","sys","sys","sys","sys","sys","sys","sys","sys","sys",
+        "system","system","system","system","system",
+        "Usr", "Usr", "Usr",
+        "SySTem", "SySTem",
+        "User","User","User","User","User","User","User","User","User","User","User","User",
+    }
+
+    data3 := []string { "1.1.1.1", "4.2.2.1", "8.8.8.8", "9.9.9.9", }
+
+
+    fmt.Println(len(data1))
+    fmt.Println(len(data2))
+    fmt.Println(len(data3))
+    fmt.Println()
+
+    var input *bufio.Scanner
+    input = bufio.NewScanner(data1)
+
+    for input.Scan() {
+        fmt.Println("input:", input.Text())
+    }
+}
 
