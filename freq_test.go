@@ -18,43 +18,54 @@ package main
 
 import (
     "bufio"
+    "bytes"
     "fmt"
+    "strings"
     "testing"
 )
 
+
 func TestFreq(t *testing.T) {
+    /*
     data1 := []string {
         "total 28",
         "-rw-rw-r-- 1 jftuga jftuga  1068 Sep  5 15:41 LICENSE",
         "-rw-rw-r-- 1 jftuga jftuga   101 Sep  5 15:41 Makefile",
         "-rw-rw-r-- 1 jftuga jftuga  1938 Sep  5 15:41 README.md",
+        "-rwxrwxr-x 1 john john 2457264 Sep  5 16:49 freq",
         "-rw-rw-r-- 1 jftuga jftuga 11354 Sep  5 15:41 freq.go",
         "-rw-rw-r-- 1 jftuga jftuga  1310 Sep  5 16:29 freq_test.go",
         "-rw-rw-r-- 1 jftuga jftuga     0 Sep  5 16:37 testfile",
     }
+    */
 
     data2 := []string {
         "usr","usr","usr","usr","usr","usr",
         "sys","sys","sys","sys","sys","sys","sys","sys","sys","sys","sys",
         "system","system","system","system","system",
         "Usr", "Usr", "Usr",
-        "SySTem", "SySTem",
+        "SySTem", "SySTem", "system", "SYSTEM",
         "User","User","User","User","User","User","User","User","User","User","User","User",
     }
 
-    data3 := []string { "1.1.1.1", "4.2.2.1", "8.8.8.8", "9.9.9.9", }
+    //data3 := []string { "1.1.1.1", "4.2.2.1", "8.8.8.8", "9.9.9.9", }
+
+    //blobData1 := []byte( strings.Join(data1,"\n") )
+    //inputData1 := bufio.NewScanner(bytes.NewReader(blobData1))
+    blobData2 := []byte( strings.Join(data2,"\n") )
+    inputData2 := bufio.NewScanner(bytes.NewReader(blobData2))
+    //blobData3 := []byte( strings.Join(data3,"\n") )
+    //inputData3 := bufio.NewScanner(bytes.NewReader(blobData3))
 
 
-    fmt.Println(len(data1))
-    fmt.Println(len(data2))
-    fmt.Println(len(data3))
-    fmt.Println()
+    // func ReadInput(input *bufio.Scanner, convertToLower bool, substringStart int, substringEnd int, matchRegExp string) map[string]uint32
+    // func output(unique []Line, start int, count int, total float32, lineEnding string, usePercentage bool, dnsResolve bool, bare bool) {
 
-    var input *bufio.Scanner
-    input = bufio.NewScanner(data1)
+    // test -l, lowercase
+    tbl := make(map[string]uint32)
+    tbl = ReadInput(inputData2, true, 0, 0, "")
+    fmt.Println(tbl)
+    unique, total := uniqueAndSort(tbl, false, false)
+    output(unique, 0, len(unique)-1, float32(total), "\n", false, false, false)
 
-    for input.Scan() {
-        fmt.Println("input:", input.Text())
-    }
 }
-
