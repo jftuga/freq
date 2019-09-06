@@ -140,7 +140,7 @@ func ReadInput(input *bufio.Scanner, convertToLower bool, substringStart int, su
             }
         } else {
             for input.Scan() {
-                fmt.Println("flag 150")
+                //fmt.Println("flag 150")
                 inputText = input.Text()
                 if regExpFilter != nil && !findRegExp(inputText,regExpFilter) {
                     continue
@@ -250,6 +250,26 @@ func ReadInput(input *bufio.Scanner, convertToLower bool, substringStart int, su
     return tbl
 }
 
+func uniqueAndSort(tbl map[string]uint32, argsPercent, argsAscend bool) ([]Line,uint32) {
+    // 'unique' is used for sorting
+    var unique []Line
+    for data, count := range tbl {
+        unique = append(unique, Line{data, count})
+    }
+
+    // 'total' is used for the percentage divisor
+    var total uint32;
+    if argsPercent {
+        for _, count := range tbl {
+            total += count
+        }
+    }
+
+    // run an in-place sort of 'unique'
+    sortInput(unique, argsAscend)
+    return unique, total
+}
+
 func main() {
     argsAscend := flag.Bool("a", false, "output results in ascending order")
     argsLower := flag.Bool("l", false, "convert to lowercase first")
@@ -298,7 +318,7 @@ func main() {
 
     // read input line-by-line to populate 'tbl' hashtable
     tbl := ReadInput(input, *argsLower, *argsSubstringStart, *argsSubstringEnd, *argsRegExp)
-
+/*
     // 'unique' is used for sorting
     var unique []Line
     for data, count := range tbl {
@@ -315,6 +335,9 @@ func main() {
 
     // run an in-place sort of 'unique'
     sortInput(unique, *argsAscend)
+*/
+
+    unique, total := uniqueAndSort(tbl, *argsPercent, *argsAscend)
 
     lineEnding := "\n"
     if "windows" == runtime.GOOS {
