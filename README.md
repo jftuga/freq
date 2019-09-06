@@ -15,6 +15,8 @@ Usage for freq:
   -n int
     	only output the first N results
   -p	output using percentages
+  -re string
+    	only include results matching REG-EXP; prepend '(?i)' for case insensitive matching
   -se int
     	substring end position
   -ss int
