@@ -20,6 +20,7 @@ import (
     "bufio"
     "bytes"
     "fmt"
+    "io"
     "strings"
     "testing"
 )
@@ -29,13 +30,12 @@ func TestFreq(t *testing.T) {
     /*
     data1 := []string {
         "total 28",
-        "-rw-rw-r-- 1 jftuga jftuga  1068 Sep  5 15:41 LICENSE",
-        "-rw-rw-r-- 1 jftuga jftuga   101 Sep  5 15:41 Makefile",
-        "-rw-rw-r-- 1 jftuga jftuga  1938 Sep  5 15:41 README.md",
-        "-rwxrwxr-x 1 john john 2457264 Sep  5 16:49 freq",
-        "-rw-rw-r-- 1 jftuga jftuga 11354 Sep  5 15:41 freq.go",
-        "-rw-rw-r-- 1 jftuga jftuga  1310 Sep  5 16:29 freq_test.go",
-        "-rw-rw-r-- 1 jftuga jftuga     0 Sep  5 16:37 testfile",
+        "-rw-rw-r-- 1 jftuga jftuga     1068 Sep  5 15:41 LICENSE",
+        "-rw-rw-r-- 1 jftuga jftuga      101 Sep  5 15:41 Makefile",
+        "-rwxrwxr-x 1 jftuga jftuga  2457264 Sep  9 04:24 freq"
+        "-rw-rw-r-- 1 jftuga jftuga    11354 Sep  5 15:41 freq.go",
+        "-rw-rw-r-- 1 jftuga jftuga     1310 Sep  5 16:29 freq_test.go",
+        "-rw-rw-r-- 1 jftuga jftuga        6 Sep  5 16:37 testfile",
     }
     */
 
@@ -66,6 +66,14 @@ func TestFreq(t *testing.T) {
     tbl = ReadInput(inputData2, true, 0, 0, "")
     fmt.Println(tbl)
     unique, total := uniqueAndSort(tbl, false, false)
-    output(unique, 0, len(unique)-1, float32(total), "\n", false, false, false)
 
+    var b bytes.Buffer
+    result := output(io.Writer(&b), unique, 0, len(unique)-1, float32(total), "\n", false, false, false)
+    //fmt.Printf("\n%v\n", result)
+    r := strings.NewReader("")
+    _, err := io.Copy(result,r)
+    if err != nil {
+        fmt.Println("err:", err)
+    }
+    fmt.Println("r:",r)
 }
