@@ -19,7 +19,6 @@ import (
     "bufio"
     "flag"
     "fmt"
-    "io"
     "net"
     "os"
     "regexp"
@@ -71,7 +70,7 @@ func dnsLookup(ip string) string {
     return resolved
 }
 
-func output(dest io.Writer, unique []Line, start int, count int, total float32, lineEnding string, usePercentage bool, dnsResolve bool, bare bool) *bufio.Writer {
+func output(unique []Line, start int, count int, total float32, lineEnding string, usePercentage bool, dnsResolve bool, bare bool) string {
     if start > 0 {
         start = count - start + 1
     }
@@ -80,8 +79,7 @@ func output(dest io.Writer, unique []Line, start int, count int, total float32, 
     }
 
     dnsRE := regexp.MustCompile(`^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$`)
-    writer := bufio.NewWriter(dest)
-    defer writer.Flush()
+    var built strings.Builder
 
     if usePercentage {
         var percentage float32
@@ -94,10 +92,10 @@ func output(dest io.Writer, unique []Line, start int, count int, total float32, 
             }
             if bare {
                 //fmt.Printf("%s%s", unique[i].data, lineEnding)
-                writer.WriteString(fmt.Sprintf("%s%s", unique[i].data, lineEnding))
+                built.WriteString(fmt.Sprintf("%s%s", unique[i].data, lineEnding))
             } else {
                 //fmt.Printf("%7.1f\t%s%s", percentage, unique[i].data, lineEnding)
-                writer.WriteString(fmt.Sprintf("%7.1f\t%s%s", percentage, unique[i].data, lineEnding))
+                built.WriteString(fmt.Sprintf("%7.1f\t%s%s", percentage, unique[i].data, lineEnding))
             }
          }
      } else {
@@ -109,14 +107,14 @@ func output(dest io.Writer, unique []Line, start int, count int, total float32, 
             }
             if bare {
                 //fmt.Printf("%s%s", unique[i].data, lineEnding)
-                writer.WriteString(fmt.Sprintf("%s%s", unique[i].data, lineEnding))
+                built.WriteString(fmt.Sprintf("%s%s", unique[i].data, lineEnding))
             } else {
                 //fmt.Printf("%7d\t%s%s", unique[i].count, unique[i].data, lineEnding)
-                writer.WriteString(fmt.Sprintf("%7d\t%s%s", unique[i].count, unique[i].data, lineEnding))
+                built.WriteString(fmt.Sprintf("%7d\t%s%s", unique[i].count, unique[i].data, lineEnding))
             }
         }
      }
-     return writer
+     return built.String()
 }
 
 func findRegExp(line string, re *regexp.Regexp) bool {
@@ -368,6 +366,6 @@ func main() {
     }
 
     // output the results to STDOUT
-    output(os.Stdout, unique, start, displayCount, float32(total), lineEnding, *argsPercent, *argsResolve, *argsBare)
+    fmt.Print(output(unique, start, displayCount, float32(total), lineEnding, *argsPercent, *argsResolve, *argsBare))
 }
 

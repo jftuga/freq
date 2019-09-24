@@ -15,16 +15,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package main
 
-
 import (
     "bufio"
     "bytes"
     "fmt"
-    "io"
     "strings"
     "testing"
 )
-
 
 func TestFreq(t *testing.T) {
     /*
@@ -64,16 +61,11 @@ func TestFreq(t *testing.T) {
     // test -l, lowercase
     tbl := make(map[string]uint32)
     tbl = ReadInput(inputData2, true, 0, 0, "")
-    fmt.Println(tbl)
+    fmt.Println("tbl:", tbl)
     unique, total := uniqueAndSort(tbl, false, false)
 
-    var b bytes.Buffer
-    result := output(io.Writer(&b), unique, 0, len(unique)-1, float32(total), "\n", false, false, false)
-    //fmt.Printf("\n%v\n", result)
-    r := strings.NewReader("")
-    _, err := io.Copy(result,r)
-    if err != nil {
-        fmt.Println("err:", err)
-    }
-    fmt.Println("r:",r)
+    result := output(unique, 0, len(unique)-1, float32(total), "\n", false, false, false)
+    //fmt.Printf("result\n------\n\n%v\n", result)
+    fmt.Print(result)
 }
+
