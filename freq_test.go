@@ -18,7 +18,6 @@ package main
 import (
     "bufio"
     "bytes"
-    "fmt"
     "strings"
     "testing"
 )
@@ -29,10 +28,10 @@ func validateResult(t *testing.T, candidate string, correct []string) bool {
         trimmed := strings.TrimSpace(array[i])
         trimmed = strings.Replace(trimmed,"\t"," ", 1)
         if( 0 != strings.Compare(trimmed,correct[i]) ) {
-            fmt.Printf("FAILURE: %d  %+q  !=  %+q\n", i, trimmed, correct[i])
+            t.Errorf("FAILURE: %d  %+q  !=  %+q\n", i, trimmed, correct[i])
             t.Fail()
         } else {
-            fmt.Printf("     OK: %d  %+q  ==  %+q\n", i, trimmed, correct[i])
+            t.Logf("     OK: %d  %+q  ==  %+q\n", i, trimmed, correct[i])
         }
     }
 
@@ -61,8 +60,12 @@ func TestFreq(t *testing.T) {
         "User","User","User","User","User","User","User","User","User","User","User","User",
     }
 
-    correct2 := []string {
+    correct2a := []string {
         "12 user", "11 sys", "9 system", "9 usr",
+    }
+
+    correct2b := []string {
+        "9 system", "9 usr", "11 sys", "12 user",
     }
 
     //data3 := []string { "1.1.1.1", "4.2.2.1", "8.8.8.8", "9.9.9.9", }
@@ -81,12 +84,18 @@ func TestFreq(t *testing.T) {
     // test -l, lowercase
     tbl := make(map[string]uint32)
     tbl = ReadInput(inputData2, true, 0, 0, "")
-    fmt.Println("tbl:", tbl)
+    t.Log("tbl:", tbl)
     unique, total := uniqueAndSort(tbl, false, false)
-
     result := output(unique, 0, len(unique)-1, float32(total), "\n", false, false, false)
-    //fmt.Printf("result\n------\n_%s_\n\n", result)
-    //fmt.Print(result)
-    validateResult(t, result, correct2)
+    validateResult(t, result, correct2a)
+
+    // test -a, ascending
+    tbl = make(map[string]uint32)
+    tbl = ReadInput(inputData2, false, 0, 0, "")
+    t.Log("tbl:", tbl)
+    unique, total = uniqueAndSort(tbl, false, true)
+    result = output(unique, 0, len(unique)-1, float32(total), "\n", false, false, false)
+    validateResult(t, result, correct2b)
+
 }
 
