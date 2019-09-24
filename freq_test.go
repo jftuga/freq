@@ -65,7 +65,7 @@ func TestFreq(t *testing.T) {
     }
 
     correct2b := []string {
-        "9 system", "9 usr", "11 sys", "12 user",
+        "1 SYSTEM", "2 SySTem", "3 Usr", "6 system", "6 usr", "11 sys", "12 User",
     }
 
     //data3 := []string { "1.1.1.1", "4.2.2.1", "8.8.8.8", "9.9.9.9", }
@@ -90,7 +90,7 @@ func TestFreq(t *testing.T) {
     validateResult(t, result, correct2a)
 
     // test -a, ascending
-    tbl = make(map[string]uint32)
+    inputData2 = bufio.NewScanner(bytes.NewReader(blobData2))
     tbl = ReadInput(inputData2, false, 0, 0, "")
     t.Log("tbl:", tbl)
     unique, total = uniqueAndSort(tbl, false, true)
