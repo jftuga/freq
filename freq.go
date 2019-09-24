@@ -131,7 +131,7 @@ func ReadInput(input *bufio.Scanner, convertToLower bool, substringStart int, su
     if len(matchRegExp) > 0 {
         regExpFilter = regexp.MustCompile(matchRegExp)
     }
-    fmt.Println("regExpFilter:", regExpFilter)
+    //fmt.Println("regExpFilter:", regExpFilter)
     var inputText string
 
     if substringStart == 0 && substringEnd == 0 {

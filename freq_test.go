@@ -23,6 +23,22 @@ import (
     "testing"
 )
 
+func validateResult(t *testing.T, candidate string, correct []string) bool {
+    array := strings.Split(candidate, "\n")
+    for i := 0; i < len(array)-1; i++ {
+        trimmed := strings.TrimSpace(array[i])
+        trimmed = strings.Replace(trimmed,"\t"," ", 1)
+        if( 0 != strings.Compare(trimmed,correct[i]) ) {
+            fmt.Printf("FAILURE: %d  %+q  !=  %+q\n", i, trimmed, correct[i])
+            t.Fail()
+        } else {
+            fmt.Printf("     OK: %d  %+q  ==  %+q\n", i, trimmed, correct[i])
+        }
+    }
+
+    return true
+}
+
 func TestFreq(t *testing.T) {
     /*
     data1 := []string {
@@ -45,6 +61,10 @@ func TestFreq(t *testing.T) {
         "User","User","User","User","User","User","User","User","User","User","User","User",
     }
 
+    correct2 := []string {
+        "12 user", "11 sys", "9 system", "9 usr",
+    }
+
     //data3 := []string { "1.1.1.1", "4.2.2.1", "8.8.8.8", "9.9.9.9", }
 
     //blobData1 := []byte( strings.Join(data1,"\n") )
@@ -65,7 +85,8 @@ func TestFreq(t *testing.T) {
     unique, total := uniqueAndSort(tbl, false, false)
 
     result := output(unique, 0, len(unique)-1, float32(total), "\n", false, false, false)
-    //fmt.Printf("result\n------\n\n%v\n", result)
-    fmt.Print(result)
+    //fmt.Printf("result\n------\n_%s_\n\n", result)
+    //fmt.Print(result)
+    validateResult(t, result, correct2)
 }
 
