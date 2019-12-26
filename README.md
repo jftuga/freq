@@ -76,4 +76,11 @@ but slower than something like:
     sort -S 8G --parallel=4 -T /mnt/fast_ssd/tmp | uniq -c | sort -n -r -S 8G --parallel=4 -T /mnt/fast_ssd/tmp
     
 See also:  https://www.reddit.com/r/commandline/comments/a7hq5n/psa_improving_gnu_sort_speed/
-    
+
+## Compile with Docker
+
+* docker pull golang
+* git clone https://github.com/jftuga/freq.git
+* cd freq
+* docker run --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp golang:latest make 
+
