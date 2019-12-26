@@ -82,5 +82,5 @@ See also:  https://www.reddit.com/r/commandline/comments/a7hq5n/psa_improving_gn
 * docker pull golang
 * git clone https://github.com/jftuga/freq.git
 * cd freq
-* docker run --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp golang:latest make 
+* docker run --rm -v "$PWD":/usr/src/freq -w /usr/src/freq golang:latest make 
 
