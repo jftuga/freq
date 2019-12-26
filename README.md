@@ -79,6 +79,7 @@ See also:  https://www.reddit.com/r/commandline/comments/a7hq5n/psa_improving_gn
 
 ## Compile with Docker
 
+* see also: https://hub.docker.com/_/golang
 * docker pull golang
 * git clone https://github.com/jftuga/freq.git
 * cd freq
