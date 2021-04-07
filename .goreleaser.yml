@@ -21,6 +21,9 @@ build:
       goarch: arm
     - goos: freebsd
       goarch: mips
+    - goos: windows
+      goarch: arm
+      goarm: 7
 archive:
   name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ .Arm }}"
   format: tar.gz
