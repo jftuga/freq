@@ -27,7 +27,12 @@ type Line struct {
     count uint32
 }
 
-const version = "1.8.0"
+const pgmName string = "freq"
+const pgmDesc string = "Display the frequency of each line in a file or from STDIN"
+const pgmURL string = "https://github.com/jftuga/freq"
+const pgmLicense = "https://github.com/jftuga/freq/blob/master/LICENSE"
+const pgmVersion string = "1.8.1"
+
 
 // Slices are passed by reference
 func sortInput(unique []Line, ascending bool) {
@@ -194,6 +199,14 @@ func ReadInput(input *bufio.Scanner, convertToLower bool, substringStart int, su
     return tbl
 }
 
+func showVersion() {
+    fmt.Fprintf(os.Stderr, "%s\n", pgmName)
+    fmt.Fprintf(os.Stderr, "%s\n", pgmDesc)
+    fmt.Fprintf(os.Stderr, "version : %s\n", pgmVersion)
+    fmt.Fprintf(os.Stderr, "homepage: %s\n", pgmURL)
+    fmt.Fprintf(os.Stderr, "license : %s\n\n", pgmLicense)
+}
+
 func main() {
     argsAscend := flag.Bool("a", false, "output results in ascending order")
     argsLower := flag.Bool("l", false, "convert to lowercase first")
@@ -206,14 +219,14 @@ func main() {
     argsSubstringStart := flag.Int("ss", 0, "substring start position")
     argsSubstringEnd := flag.Int("se", 0, "substring end position")
     flag.Usage = func() {
-        fmt.Fprintf(os.Stderr, "\n%s %s, display the frequency of each line in a file or from STDIN.\n\n", os.Args[0], version)
+        fmt.Fprintf(os.Stderr, "\n%s %s, display the frequency of each line in a file or from STDIN.\n\n", os.Args[0], pgmVersion)
         fmt.Fprintf(os.Stderr, "Usage for %s:\n", os.Args[0])
         flag.PrintDefaults()
     }
 
     flag.Parse()
     if *argsVersion {
-        fmt.Fprintf(os.Stderr, "version: %s\n", version)
+        showVersion()
         return
     }
 
