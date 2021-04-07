@@ -24,29 +24,18 @@ build:
     - goos: windows
       goarch: arm
       goarm: 7
-archive:
-  name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ .Arm }}"
-  format: tar.gz
-  format_overrides:
-    - goos: windows
-      format: zip
-  replacements:
-      darwin: macOS
-  wrap_in_directory: true
+archives:
+  - name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ .Arm }}"
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+    replacements:
+        darwin: macOS
+    wrap_in_directory: true
 checksum:
   name_template: "{{ .ProjectName }}_{{ .Version }}--sha256_checksums.txt"
 release:
   draft: true
-nfpm:
-  name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ .Arm }}"
-  homepage:  https://github.com/jftuga/freq
-  description: freq, display the frequency of each line in a file or from STDIN
-  maintainer: https://reddit.com/u/jftuga
-  license: MIT
-  vendor: jftuga
-  formats:
-  - deb
-  - rpm
-  recommends:
-  - rpm
+
 
