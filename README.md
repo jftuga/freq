@@ -44,11 +44,11 @@ R:\freq>type test.txt | freq.exe
       2 b
       1 a
 
-jftuga@linux:~/go/src/github.com/jftuga/freq$ freq -n 2 test.txt
+me@linux:~/freq$ freq -n 2 test.txt
       4 d
       3 c
 
-jftuga@linux:~/go/src/github.com/jftuga/freq$ ls -l | grep -v ^total ; echo ; ls -l | grep -v ^total | freq -ss 2 -se 6
+me@linux:~/freq$ ls -l | grep -v ^total ; echo ; ls -l | grep -v ^total | freq -ss 2 -se 6
 -rw-r--r-- 1 jftuga jftuga    1068 Feb  2 20:33 LICENSE
 -rw-r--r-- 1 jftuga jftuga     214 Feb  2 20:33 Makefile
 -rw-r--r-- 1 jftuga jftuga    1292 Feb  2 20:41 README.md
