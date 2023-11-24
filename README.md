@@ -4,6 +4,8 @@ Display the line frequency of each line in a file or from STDIN
 
 The [Releases Page](https://github.com/jftuga/freq/releases) contains binaries for Windows, MacOS, Linux and FreeBSD.
 
+## Usage
+
 ```
 Usage for freq:
   -N int
@@ -22,7 +24,12 @@ Usage for freq:
   -v	display version and then exit
 ```
 
-Examples:
+## Installation
+
+* macOS: `brew update; brew install jftuga/tap/freq`
+* Binaries for Linux, macOS and Windows are provided in the [releases](https://github.com/jftuga/freq/releases) section.
+
+## Examples
 
 ```
 R:\freq>type con > test.txt
